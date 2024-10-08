@@ -32,5 +32,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(messageDTO, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(AccentNotFoundException.class)
+    public ResponseEntity<Object> handleAccentNotFoundException(AccentNotFoundException ex) {
+        ErrorMessageDTO messageDTO = new ErrorMessageDTO(ex.getMessage());
+        return new ResponseEntity<>(messageDTO, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AccentAlreadySoldException.class)
+    public ResponseEntity<Object> handleAccentAlreadySoldException(AccentAlreadySoldException ex) {
+        ErrorMessageDTO messageDTO = new ErrorMessageDTO(ex.getMessage());
+        return new ResponseEntity<>(messageDTO, HttpStatus.CONFLICT);
+    }
 }
 

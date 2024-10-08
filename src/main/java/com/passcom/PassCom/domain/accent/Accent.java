@@ -1,5 +1,6 @@
 package com.passcom.PassCom.domain.accent;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.passcom.PassCom.domain.travel.Travel;
 import com.passcom.PassCom.domain.user.User;
 import jakarta.persistence.*;
@@ -26,5 +27,6 @@ public class Accent {
 
     @ManyToOne
     @JoinColumn(name = "travel_id")
+    @JsonBackReference
     private Travel travel;
 }
