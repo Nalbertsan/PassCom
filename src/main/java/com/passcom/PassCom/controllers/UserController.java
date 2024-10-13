@@ -5,6 +5,8 @@ import com.passcom.PassCom.dto.UserDTO;
 import com.passcom.PassCom.exceptions.UserNotFoundException;
 import com.passcom.PassCom.repostories.UserRepository;
 import com.passcom.PassCom.service.user.UserService;
+import com.passcom.PassCom.service.user.UserSynchronizeService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ public class UserController {
 
     @Autowired
     private final UserService userService;
+    private final UserSynchronizeService userSynchronizeService;
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -34,6 +37,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
         return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    @GetMapping("/not-synchronized/{serverId}")
+    public ResponseEntity<List<User>> getUsersNotSynchronizedWithServer(@PathVariable String serverId) {
+        List<User> users = userSynchronizeService.getUsersNotSynchronizedWithServer(serverId);
+        return ResponseEntity.ok(users);
     }
 
 }

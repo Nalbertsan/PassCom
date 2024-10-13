@@ -1,5 +1,6 @@
 package com.passcom.PassCom.domain.user;
 
+import com.passcom.PassCom.domain.server.Server;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,11 +13,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user_synchronize")
-public class userSynchronize {
+public class UserSynchronize {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private boolean synchronize;
-
-
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "server_id")
+    private Server server;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

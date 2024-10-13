@@ -32,4 +32,5 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         return new UserDTO(user.getName(), user.getEmail(), user.getId());
     }
+
 }

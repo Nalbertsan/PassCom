@@ -1,26 +1,26 @@
-package com.passcom.PassCom.domain.user;
+package com.passcom.PassCom.domain.server;
 
+import com.passcom.PassCom.domain.user.UserSynchronize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_aplication")
-public class User {
+@NoArgsConstructor
+@Entity
+@Table(name = "server")
+public class Server {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String email;
-    private String name;
-    private String password;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private String path;
+    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSynchronize> listUserSynchronize;
 }
