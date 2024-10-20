@@ -1,9 +1,7 @@
 package com.passcom.PassCom.controllers;
 
 import com.passcom.PassCom.domain.user.User;
-import com.passcom.PassCom.dto.LoginRequestDTO;
-import com.passcom.PassCom.dto.RegisterRequestDTO;
-import com.passcom.PassCom.dto.ResponseAuthDTO;
+import com.passcom.PassCom.dto.*;
 import com.passcom.PassCom.exceptions.UserAlreadyExistsException;
 import com.passcom.PassCom.exceptions.UserNotFoundException;
 import com.passcom.PassCom.repostories.UserRepository;
@@ -38,6 +36,12 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ResponseAuthDTO> register(@Valid @RequestBody RegisterRequestDTO body) {
         ResponseAuthDTO response = authService.register(body);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/register/server")
+    public ResponseEntity<MessageDTO> registerServers(@RequestBody RegisterServerRequestDTO body) {
+        MessageDTO response = authService.saveUserServer(body);
         return ResponseEntity.ok(response);
     }
 }

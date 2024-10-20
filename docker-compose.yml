@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  app1:  # Primeiro serviço da aplicação Spring
+    image: passcom
+    container_name: passcom-app1
+    environment:
+      SPRING_APPLICATION_NAME: PassCom1
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db1:5432/postgres  # Conecta ao db1
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+      API_SECURITY_TOKEN_SECRET: 18-08-2022Cal&Nal
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EXTERNAL_SERVICE_URL: http://app2:8080  # Comunicação com o app2
+      SECONDARY_EXTERNAL_SERVICE_URL: http://app3:8080  # Comunicação com o app3
+    ports:
+      - "9090:8080"  # Mapeia a porta 8080 da aplicação para a porta 9090 da máquina
+
+  db1:  # Primeiro serviço do banco de dados PostgreSQL
+    image: postgres:15
+    container_name: postgres-db1
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data1:/var/lib/postgresql/data
+
+  app2:  # Segundo serviço da aplicação Spring
+    image: passcom
+    container_name: passcom-app2
+    environment:
+      SPRING_APPLICATION_NAME: PassCom2
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db2:5432/postgres  # Conecta ao db2
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+      API_SECURITY_TOKEN_SECRET: 18-08-2022Cal&Nal
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EXTERNAL_SERVICE_URL: http://app1:8080  # Comunicação com o app1
+      SECONDARY_EXTERNAL_SERVICE_URL: http://app3:8080  # Comunicação com o app3
+    ports:
+      - "9091:8080"
+
+  db2:  # Segundo serviço do banco de dados PostgreSQL
+    image: postgres:15
+    container_name: postgres-db2
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-data2:/var/lib/postgresql/data
+
+  app3:  # Terceiro serviço da aplicação Spring
+    image: passcom
+    container_name: passcom-app3
+    environment:
+      SPRING_APPLICATION_NAME: PassCom3
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db3:5432/postgres  # Conecta ao db3
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+      API_SECURITY_TOKEN_SECRET: 18-08-2022Cal&Nal
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EXTERNAL_SERVICE_URL: http://app1:8080  # Comunicação com o app1
+      SECONDARY_EXTERNAL_SERVICE_URL: http://app2:8080  # Comunicação com o app2
+    ports:
+      - "9092:8080"
+
+  db3:  # Terceiro serviço do banco de dados PostgreSQL
+    image: postgres:15
+    container_name: postgres-db3
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres-data3:/var/lib/postgresql/data
+
+volumes:
+  postgres-data1:
+  postgres-data2:
+  postgres-data3:

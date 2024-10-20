@@ -21,6 +21,6 @@ public class User {
     private String email;
     private String name;
     private String password;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserSynchronize> listUserSynchronize;
+    private boolean serverOne;
+    private boolean serverTwo;
 }

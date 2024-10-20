@@ -2,11 +2,20 @@ package com.passcom.PassCom.service.travel;
 
 import com.passcom.PassCom.domain.accent.Accent;
 import com.passcom.PassCom.domain.travel.Travel;
+import com.passcom.PassCom.domain.user.User;
 import com.passcom.PassCom.dto.TravelDTO;
 import com.passcom.PassCom.exceptions.TravelNotFoundException;
 import com.passcom.PassCom.repostories.TravelRepository;
+import com.passcom.PassCom.service.infra.security.TokenSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,15 +23,76 @@ import java.util.List;
 @Service
 public class TravelService {
 
-    private final TravelRepository travelRepository;
+    @Value("${external.service.url}")
+    private String urlServerOne;
 
-    public TravelService(TravelRepository travelRepository) {
+    @Value("${secondary.external.service.url}")
+    private String urlServerTwo;
+
+    private final TravelRepository travelRepository;
+    @Autowired
+    private final TokenSecurity tokenSecurity;
+
+
+    public TravelService(TravelRepository travelRepository, TokenSecurity tokenSecurity) {
         this.travelRepository = travelRepository;
+        this.tokenSecurity = tokenSecurity;
     }
 
     public List<Travel> getAllTravels() {
         List<Travel> travels = travelRepository.findAllWithAccents();
         return travels;
+    }
+
+    public List<Travel> getAllServersTravels() {
+        List<Travel> travelsInternal = travelRepository.findAllWithAccents();
+        List<Travel> allTravels = new ArrayList<>(travelsInternal);
+
+        String token = generateTokenForRequest();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        headers.set("Authorization", "Bearer " + token);
+
+        List<String> externalServerUrls = List.of(
+                urlServerOne + "/travels",
+                urlServerTwo + "/travels"
+        );
+
+        // RestTemplate para fazer as requisições
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Para cada servidor, fazer a requisição HTTP
+        for (String url : externalServerUrls) {
+            try {
+                HttpEntity<Void> request = new HttpEntity<>(headers);
+                ResponseEntity<List<Travel>> response = restTemplate.exchange(
+                        url,
+                        HttpMethod.GET,
+                        request,
+                        new ParameterizedTypeReference<List<Travel>>() {}
+                );
+
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    List<Travel> externalTravels = response.getBody();
+                    if (externalTravels != null) {
+                        allTravels.addAll(externalTravels);
+                    }
+                }
+            } catch (Exception e) {
+                // Tratamento de erros para servidores que podem não estar disponíveis
+                System.err.println("Erro ao conectar com o servidor: " + url);
+                e.printStackTrace();
+            }
+        }
+
+        return allTravels;
+    }
+
+    private String generateTokenForRequest() {
+        // Gera o token para autenticação
+        User user = new User();
+        user.setEmail("email@gmail.com");
+        return tokenSecurity.generateToken(user);
     }
 
     public Travel getTravelById(String id) {

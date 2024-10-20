@@ -26,6 +26,12 @@ public class TravelController {
         return ResponseEntity.ok(allTravels);
     }
 
+    @GetMapping("/servers")
+    public ResponseEntity<List<Travel>> getAllServersTravels() {
+        List<Travel> allServersTravels = travelService.getAllServersTravels();
+        return ResponseEntity.ok(allServersTravels);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Travel> getUserById(@PathVariable String id) {
         Travel travel = travelService.getTravelById(id);
