@@ -1,6 +1,7 @@
 package com.passcom.PassCom.controllers;
 
 import com.passcom.PassCom.domain.accent.Accent;
+import com.passcom.PassCom.dto.ConfirmAccentDTO;
 import com.passcom.PassCom.dto.UserAccentDTO;
 import com.passcom.PassCom.service.accent.AccentService;
 import jakarta.validation.Valid;
@@ -19,6 +20,12 @@ public class AccentController {
     @PatchMapping("/sell/{accentId}")
     public ResponseEntity<Accent> sellAccent(@PathVariable("accentId") String accentId, @RequestBody @Valid UserAccentDTO userAccentDTO) {
         Accent accent = accentService.sellAccent(userAccentDTO.userId(), accentId);
+        return ResponseEntity.ok(accent);
+    }
+
+    @PatchMapping("/confirm/{accentId}")
+    public ResponseEntity<Accent> confirmAccent(@PathVariable("accentId") String accentId, @RequestBody ConfirmAccentDTO confirmAccentDTO) {
+        Accent accent = accentService.confirmAccent(accentId, confirmAccentDTO.confirm());
         return ResponseEntity.ok(accent);
     }
 }

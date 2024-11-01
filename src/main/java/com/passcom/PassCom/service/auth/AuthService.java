@@ -1,6 +1,5 @@
 package com.passcom.PassCom.service.auth;
 
-import com.passcom.PassCom.domain.travel.Travel;
 import com.passcom.PassCom.domain.user.User;
 import com.passcom.PassCom.dto.*;
 import com.passcom.PassCom.exceptions.InvalidCredentialsException;
@@ -10,7 +9,6 @@ import com.passcom.PassCom.repostories.UserRepository;
 import com.passcom.PassCom.service.infra.security.TokenSecurity;
 import com.passcom.PassCom.service.user.UserService;
 import com.passcom.PassCom.service.utils.Utils;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;

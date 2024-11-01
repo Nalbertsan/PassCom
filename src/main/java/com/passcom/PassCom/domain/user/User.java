@@ -21,6 +21,8 @@ public class User {
     private String email;
     private String name;
     private String password;
+    @Column(name = "server_one", nullable = false, columnDefinition = "boolean default false")
     private boolean serverOne;
+    @Column(name = "server_two", nullable = false, columnDefinition = "boolean default false")
     private boolean serverTwo;
 }

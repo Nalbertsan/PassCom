@@ -39,5 +39,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         MessageDTO messageDTO = new MessageDTO(ex.getMessage());
         return new ResponseEntity<>(messageDTO, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException ex) {
+        MessageDTO messageDTO = new MessageDTO(ex.getMessage());
+        return new ResponseEntity<>(messageDTO, HttpStatus.NOT_FOUND);
+    }
 }
 

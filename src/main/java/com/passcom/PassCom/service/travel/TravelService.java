@@ -3,6 +3,7 @@ package com.passcom.PassCom.service.travel;
 import com.passcom.PassCom.domain.accent.Accent;
 import com.passcom.PassCom.domain.travel.Travel;
 import com.passcom.PassCom.domain.user.User;
+import com.passcom.PassCom.dto.TravelAndServerDTO;
 import com.passcom.PassCom.dto.TravelDTO;
 import com.passcom.PassCom.exceptions.TravelNotFoundException;
 import com.passcom.PassCom.repostories.TravelRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -44,9 +46,10 @@ public class TravelService {
         return travels;
     }
 
-    public List<Travel> getAllServersTravels() {
+    public List<TravelAndServerDTO> getAllServersTravels() {
         List<Travel> travelsInternal = travelRepository.findAllWithAccents();
-        List<Travel> allTravels = new ArrayList<>(travelsInternal);
+        TravelAndServerDTO serversTravels = new TravelAndServerDTO("local", travelsInternal);
+        List<TravelAndServerDTO> allTravels = new ArrayList<>(Collections.singleton(serversTravels));
 
         String token = generateTokenForRequest();
         HttpHeaders headers = new HttpHeaders();
@@ -75,7 +78,9 @@ public class TravelService {
                 if (response.getStatusCode().is2xxSuccessful()) {
                     List<Travel> externalTravels = response.getBody();
                     if (externalTravels != null) {
-                        allTravels.addAll(externalTravels);
+                        TravelAndServerDTO serverTravel = new TravelAndServerDTO(url
+                                .replaceAll("/travels$", ""), externalTravels);
+                        allTravels.add(serverTravel);
                     }
                 }
             } catch (Exception e) {
@@ -111,6 +116,7 @@ public class TravelService {
             Accent accent = new Accent();
             accent.setNumber(i);
             accent.setTravel(travel);
+            accent.setStatusConfirmation(Accent.Status.AVAILABLE);
             accents.add(accent);
         }
 

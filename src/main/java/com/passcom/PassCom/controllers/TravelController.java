@@ -2,6 +2,7 @@ package com.passcom.PassCom.controllers;
 
 
 import com.passcom.PassCom.domain.travel.Travel;
+import com.passcom.PassCom.dto.TravelAndServerDTO;
 import com.passcom.PassCom.dto.TravelDTO;
 import com.passcom.PassCom.exceptions.TravelNotFoundException;
 import com.passcom.PassCom.repostories.TravelRepository;
@@ -27,8 +28,8 @@ public class TravelController {
     }
 
     @GetMapping("/servers")
-    public ResponseEntity<List<Travel>> getAllServersTravels() {
-        List<Travel> allServersTravels = travelService.getAllServersTravels();
+    public ResponseEntity<List<TravelAndServerDTO>> getAllServersTravels() {
+        List<TravelAndServerDTO> allServersTravels = travelService.getAllServersTravels();
         return ResponseEntity.ok(allServersTravels);
     }
 

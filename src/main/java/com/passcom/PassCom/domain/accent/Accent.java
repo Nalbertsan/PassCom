@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "accent")
 @Getter
@@ -21,6 +23,11 @@ public class Accent {
     private String id;
     private int number;
 
+    @Enumerated(EnumType.STRING)
+    private Status statusConfirmation;
+
+    private LocalDateTime expire;
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private User user;
@@ -29,4 +36,8 @@ public class Accent {
     @JoinColumn(name = "travel_id")
     @JsonBackReference
     private Travel travel;
+
+    public enum Status {
+        AVAILABLE, SOLD, RESERVED
+    }
 }
