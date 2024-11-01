@@ -1,4 +1,4 @@
-#Introdução
+## Introdução
 
 O setor de aviação de baixo custo enfrenta desafios constantes para otimizar recursos e aumentar a competitividade. A adoção do sistema de venda compartilhada de passagens (PASSCOM) por três companhias aéreas visa melhorar a acessibilidade e maximizar os lucros por meio de uma solução que permite a reserva integrada de trechos de voos entre diferentes empresas. No entanto, cada companhia possui um servidor centralizado e independente, o que torna necessário desenvolver uma comunicação distribuída entre esses servidores. A solução ideal deve garantir que o primeiro cliente a selecionar um trecho tenha preferência e que o sistema seja resiliente a falhas e sem pontos únicos de falha.
 
