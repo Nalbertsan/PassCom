@@ -16,4 +16,8 @@ public interface AccentRepository extends JpaRepository<Accent, String> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Accent a WHERE a.id = :accentId")
     Optional<Accent> findByIdAndLock(@Param("accentId") String accentId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT a FROM Accent a WHERE a.travel.id = :travelId AND a.number = :number")
+    Optional<Accent> findByTravelIdAndNumber(@Param("travelId") String travelId, @Param("number") int number);
 }

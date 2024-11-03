@@ -2,8 +2,10 @@ package com.passcom.PassCom.controllers;
 
 import com.passcom.PassCom.domain.accent.Accent;
 import com.passcom.PassCom.dto.ConfirmAccentDTO;
+import com.passcom.PassCom.dto.SellAccentServerDTO;
 import com.passcom.PassCom.dto.UserAccentDTO;
 import com.passcom.PassCom.service.accent.AccentService;
+import com.passcom.PassCom.service.accent.SellAccentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +18,25 @@ import org.springframework.web.bind.annotation.*;
 public class AccentController {
     @Autowired
     private final AccentService accentService;
+    private final SellAccentService sellAccentService;
 
-    @PatchMapping("/sell/{accentId}")
-    public ResponseEntity<Accent> sellAccent(@PathVariable("accentId") String accentId, @RequestBody @Valid UserAccentDTO userAccentDTO) {
-        Accent accent = accentService.sellAccent(userAccentDTO.userId(), accentId);
+    @PostMapping("/sell/servers")
+    public ResponseEntity<Accent> sellAccentServers(@RequestBody SellAccentServerDTO sellAccentServerDTO) {
+        Accent accent = sellAccentService.scheduleAccent(sellAccentServerDTO.serversTravels()
+                ,sellAccentServerDTO.email(),sellAccentServerDTO.accentNumber());
         return ResponseEntity.ok(accent);
     }
 
-    @PatchMapping("/confirm/{accentId}")
-    public ResponseEntity<Accent> confirmAccent(@PathVariable("accentId") String accentId, @RequestBody ConfirmAccentDTO confirmAccentDTO) {
-        Accent accent = accentService.confirmAccent(accentId, confirmAccentDTO.confirm());
+    @PatchMapping("/sell/{travelId}")
+    public ResponseEntity<Accent> sellAccent(@PathVariable("travelId") String travelId, @RequestBody UserAccentDTO userAccentDTO) {
+        System.out.println(userAccentDTO);
+        Accent accent = accentService.sellAccent(userAccentDTO.getEmail(), userAccentDTO.getAccentNumber() ,travelId);
+        return ResponseEntity.ok(accent);
+    }
+
+    @PatchMapping("/confirm/{travelId}")
+    public ResponseEntity<Accent> confirmAccent(@PathVariable("travelId") String travelId, @RequestBody ConfirmAccentDTO confirmAccentDTO) {
+        Accent accent = accentService.confirmAccent(confirmAccentDTO.accentNumber(), travelId, confirmAccentDTO.confirm());
         return ResponseEntity.ok(accent);
     }
 }

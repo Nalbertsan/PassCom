@@ -6,6 +6,8 @@ import com.passcom.PassCom.dto.TravelAndServerDTO;
 import com.passcom.PassCom.dto.TravelDTO;
 import com.passcom.PassCom.exceptions.TravelNotFoundException;
 import com.passcom.PassCom.repostories.TravelRepository;
+import com.passcom.PassCom.service.travel.Route;
+import com.passcom.PassCom.service.travel.RouteService;
 import com.passcom.PassCom.service.travel.TravelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.List;
 public class TravelController {
 
     private final TravelService travelService;
+    private final RouteService routeService;
 
     @GetMapping
     public ResponseEntity<List<Travel>> getAllTravels() {
@@ -28,9 +31,10 @@ public class TravelController {
     }
 
     @GetMapping("/servers")
-    public ResponseEntity<List<TravelAndServerDTO>> getAllServersTravels() {
+    public ResponseEntity<List<Route>> getAllServersTravels() {
         List<TravelAndServerDTO> allServersTravels = travelService.getAllServersTravels();
-        return ResponseEntity.ok(allServersTravels);
+        List<Route> routes = routeService.findPossibleRoutes(allServersTravels);
+        return ResponseEntity.ok(routes);
     }
 
     @GetMapping("/{id}")

@@ -2,20 +2,35 @@ package com.passcom.PassCom.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
 
 import java.util.Objects;
 
 public final class UserAccentDTO {
 
-    @NotBlank(message = "Id is required")
-    private final String userid;
+    @NotBlank(message = "Email is required")
+    private final String email;
 
-    public UserAccentDTO(@JsonProperty("userid") String userId) {
-        this.userid = userId;
+
+    @NotNull(message = "Accent number is required")
+    @Min(value = 1, message = "Accent number must be greater than 0")
+    private final int accentNumber;
+
+    public UserAccentDTO(
+            @JsonProperty("email") String email,
+            @JsonProperty("accentNumber") int accentNumber) {
+        this.email = email;
+        this.accentNumber = accentNumber;
     }
 
-    public String userId() {
-        return userid;
+    public String getEmail() {
+        return email;
+    }
+
+
+    public int getAccentNumber() {
+        return accentNumber;
     }
 
     @Override
@@ -23,18 +38,20 @@ public final class UserAccentDTO {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (UserAccentDTO) obj;
-        return Objects.equals(this.userid, that.userid);
+        return Objects.equals(this.email, that.email) &&
+                this.accentNumber == that.accentNumber;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userid);
+        return Objects.hash(email, accentNumber);
     }
 
     @Override
     public String toString() {
         return "UserAccentDTO[" +
-                "userId=" + userid + ']';
+                "email=" + email +
+                ", accentNumber=" + accentNumber +
+                ']';
     }
-
 }

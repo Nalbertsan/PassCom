@@ -1,4 +1,4 @@
 package com.passcom.PassCom.dto;
 
-public record ConfirmAccentDTO(boolean confirm) {
+public record ConfirmAccentDTO(int accentNumber , boolean confirm) {
 }
