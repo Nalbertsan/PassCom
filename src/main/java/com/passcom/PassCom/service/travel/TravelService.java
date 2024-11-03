@@ -1,12 +1,15 @@
 package com.passcom.PassCom.service.travel;
 
 import com.passcom.PassCom.domain.accent.Accent;
+import com.passcom.PassCom.domain.ticket.Ticket;
 import com.passcom.PassCom.domain.travel.Travel;
 import com.passcom.PassCom.domain.user.User;
 import com.passcom.PassCom.dto.TravelAndServerDTO;
 import com.passcom.PassCom.dto.TravelDTO;
 import com.passcom.PassCom.exceptions.TravelNotFoundException;
+import com.passcom.PassCom.repostories.TicketRepository;
 import com.passcom.PassCom.repostories.TravelRepository;
+import com.passcom.PassCom.repostories.UserRepository;
 import com.passcom.PassCom.service.infra.security.TokenSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,12 +35,14 @@ public class TravelService {
     private String urlServerTwo;
 
     private final TravelRepository travelRepository;
+    private final TicketRepository ticketRepository;
     @Autowired
     private final TokenSecurity tokenSecurity;
 
 
-    public TravelService(TravelRepository travelRepository, TokenSecurity tokenSecurity) {
+    public TravelService(TravelRepository travelRepository, TicketRepository ticketRepository, TokenSecurity tokenSecurity) {
         this.travelRepository = travelRepository;
+        this.ticketRepository = ticketRepository;
         this.tokenSecurity = tokenSecurity;
     }
 
@@ -139,5 +144,9 @@ public class TravelService {
     public void deleteTravel(String id) {
         Travel travel = getTravelById(id);
         travelRepository.delete(travel);
+    }
+
+    public List<Ticket> getAllTickets(String email) {
+        return ticketRepository.findAllByUserEmail(email);
     }
 }

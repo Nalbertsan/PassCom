@@ -1,4 +1,6 @@
 package com.passcom.PassCom.dto;
 
-public record ConfirmAccentDTO(int accentNumber , boolean confirm) {
+import com.passcom.PassCom.domain.ticket.Ticket;
+
+public record ConfirmAccentDTO(int accentNumber , boolean confirm, Ticket ticket) {
 }

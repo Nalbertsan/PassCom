@@ -1,40 +1,36 @@
 package com.passcom.PassCom.service.accent;
 
 import com.passcom.PassCom.domain.accent.Accent;
+import com.passcom.PassCom.domain.ticket.Ticket;
 import com.passcom.PassCom.domain.user.User;
-import com.passcom.PassCom.dto.ServersTravelsDTO;
-import com.passcom.PassCom.dto.UserAccentDTO;
 import com.passcom.PassCom.exceptions.AccentAlreadySoldException;
 import com.passcom.PassCom.exceptions.AccentNotFoundException;
 import com.passcom.PassCom.exceptions.UserNotFoundException;
 import com.passcom.PassCom.repostories.AccentRepository;
+import com.passcom.PassCom.repostories.TicketRepository;
 import com.passcom.PassCom.repostories.UserRepository;
 import com.passcom.PassCom.service.infra.security.TokenSecurity;
-import com.passcom.PassCom.service.travel.TravelService;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import com.passcom.PassCom.service.travel.RouterService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 public class AccentService {
 
     private final AccentRepository accentRepository;
     private final UserRepository userRepository;
-    private final TravelService travelService;
+    private final RouterService travelService;
     private final TokenSecurity tokenSecurity;
+    private final TicketRepository ticketRepository;
 
-    public AccentService(AccentRepository accentRepository, UserRepository userRepository, TravelService travelService, TokenSecurity tokenSecurity) {
+    public AccentService(AccentRepository accentRepository, UserRepository userRepository, RouterService travelService, TokenSecurity tokenSecurity, TicketRepository ticketRepository) {
         this.accentRepository = accentRepository;
         this.userRepository = userRepository;
         this.travelService = travelService;
         this.tokenSecurity = tokenSecurity;
+        this.ticketRepository = ticketRepository;
     }
 
     @Transactional
@@ -56,7 +52,7 @@ public class AccentService {
     }
 
     @Transactional
-    public Accent confirmAccent(int accentNumber ,String travelId, boolean confirm) {
+    public Accent confirmAccent(int accentNumber , String travelId, boolean confirm, Ticket ticket) {
         Accent accent = accentRepository.findByTravelIdAndNumber(travelId, accentNumber).orElseThrow(() -> new AccentNotFoundException("Accent not found"));
 
         if (accent.getUser() == null) {
@@ -69,7 +65,14 @@ public class AccentService {
         }
 
         if (confirm) {
+            if (ticket != null) {
+                User user = userRepository.findByEmail(ticket.getUser().getEmail()).orElseThrow(() -> new UserNotFoundException("User not found"));
+                ticket.setUser(user);
+                ticketRepository.save(ticket);
+            }
+
             accent.setStatusConfirmation(Accent.Status.SOLD);
+
         } else {
             accent.setStatusConfirmation(Accent.Status.AVAILABLE);
             accent.setUser(null);

@@ -23,7 +23,7 @@ public class AccentController {
     @PostMapping("/sell/servers")
     public ResponseEntity<Accent> sellAccentServers(@RequestBody SellAccentServerDTO sellAccentServerDTO) {
         Accent accent = sellAccentService.scheduleAccent(sellAccentServerDTO.serversTravels()
-                ,sellAccentServerDTO.email(),sellAccentServerDTO.accentNumber());
+                ,sellAccentServerDTO.email(),sellAccentServerDTO.accentNumber(), sellAccentServerDTO.origin(), sellAccentServerDTO.destination());
         return ResponseEntity.ok(accent);
     }
 
@@ -36,7 +36,7 @@ public class AccentController {
 
     @PatchMapping("/confirm/{travelId}")
     public ResponseEntity<Accent> confirmAccent(@PathVariable("travelId") String travelId, @RequestBody ConfirmAccentDTO confirmAccentDTO) {
-        Accent accent = accentService.confirmAccent(confirmAccentDTO.accentNumber(), travelId, confirmAccentDTO.confirm());
+        Accent accent = accentService.confirmAccent(confirmAccentDTO.accentNumber(), travelId, confirmAccentDTO.confirm(), confirmAccentDTO.ticket());
         return ResponseEntity.ok(accent);
     }
 }
