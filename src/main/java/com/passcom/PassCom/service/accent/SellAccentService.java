@@ -40,6 +40,18 @@ public class SellAccentService {
     }
 
 
+    /**
+     * Agenda a venda de um assento em múltiplas viagens de servidores, confirmando a transação para cada rota e
+     * salvando um ticket local se todas as operações forem bem-sucedidas.
+     *
+     * @param serversTravels Lista de viagens dos servidores com informações de rota e identificador de viagem.
+     * @param email Email do usuário que está reservando o assento.
+     * @param accentNumber Número do assento a ser reservado.
+     * @param origin Origem da viagem.
+     * @param destination Destino da viagem.
+     * @return Um novo objeto Accent se todas as transações foram bem-sucedidas, ou null caso contrário.
+     * @throws UserNotFoundException se o usuário não for encontrado.
+     */
     public Accent scheduleAccent(List<ServersTravelsDTO> serversTravels, String email, int accentNumber, String origin, String destination) {
         List<Boolean> successList = new ArrayList<>();
 
@@ -71,7 +83,7 @@ public class SellAccentService {
                 } catch (Exception e) {
                     successList.add(false);
                     System.out.println("Erro ao realizar requisição para " + travel.travelId() + ": " + e.getMessage());
-                    e.printStackTrace();
+
                 }
             }
         }
@@ -118,7 +130,7 @@ public class SellAccentService {
                     }
                 } catch (Exception e) {
                     System.out.println("Erro ao realizar requisição para " + travel.travelId() + ": " + e.getMessage());
-                    e.printStackTrace();
+
                 }
             }
         }

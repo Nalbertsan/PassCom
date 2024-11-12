@@ -46,11 +46,23 @@ public class TravelService {
         this.tokenSecurity = tokenSecurity;
     }
 
+    /**
+     * Recupera todas as viagens do banco de dados local.
+     *
+     * @return Uma lista com todas as viagens, incluindo seus acentos.
+     */
     public List<Travel> getAllTravels() {
         List<Travel> travels = travelRepository.findAllWithAccents();
         return travels;
     }
 
+    /**
+     * Recupera as viagens do servidor local e de servidores externos.
+     * Obtém as viagens do repositório local e faz requisições HTTP GET
+     * para servidores externos para buscar viagens adicionais.
+     *
+     * @return Uma lista de TravelAndServerDTO, incluindo viagens do servidor local e de servidores externos.
+     */
     public List<TravelAndServerDTO> getAllServersTravels() {
         List<Travel> travelsInternal = travelRepository.findAllWithAccents();
         TravelAndServerDTO serversTravels = new TravelAndServerDTO("local", travelsInternal);
@@ -91,13 +103,18 @@ public class TravelService {
             } catch (Exception e) {
                 // Tratamento de erros para servidores que podem não estar disponíveis
                 System.err.println("Erro ao conectar com o servidor: " + url);
-                e.printStackTrace();
             }
         }
 
         return allTravels;
     }
 
+    /**
+     * Gera um token para autenticar requisições aos servidores externos.
+     * O token é criado para um usuário fictício com um e-mail fixo.
+     *
+     * @return Um token gerado.
+     */
     private String generateTokenForRequest() {
         // Gera o token para autenticação
         User user = new User();
@@ -105,11 +122,24 @@ public class TravelService {
         return tokenSecurity.generateToken(user);
     }
 
+    /**
+     * Recupera uma viagem pelo seu ID no banco de dados.
+     *
+     * @param id O ID da viagem.
+     * @return O objeto viagem.
+     * @throws TravelNotFoundException Se a viagem não for encontrada.
+     */
     public Travel getTravelById(String id) {
         Travel travels = travelRepository.findWithAccent(id).orElseThrow(()-> new TravelNotFoundException("Travel not found"));
         return travels;
     }
 
+    /**
+     * Cria uma nova viagem utilizando os detalhes fornecidos.
+     *
+     * @param travelDTO Os detalhes da viagem a ser criada.
+     * @return A entidade de viagem criada.
+     */
     public Travel createTravel(TravelDTO travelDTO) {
         Travel travel = new Travel();
         travel.setPrice(travelDTO.price());
@@ -129,7 +159,13 @@ public class TravelService {
 
         return travelRepository.save(travel);
     }
-
+    /**
+     * Atualiza uma viagem existente com novos detalhes.
+     *
+     * @param id O ID da viagem a ser atualizada.
+     * @param travelDetails Os novos detalhes da viagem.
+     * @return A entidade de viagem atualizada.
+     */
     public Travel updateTravel(String id, Travel travelDetails) {
         Travel existingTravel = getTravelById(id);
 
@@ -141,11 +177,22 @@ public class TravelService {
         return travelRepository.save(existingTravel);
     }
 
+    /**
+     * Exclui uma viagem do banco de dados pelo seu ID.
+     *
+     * @param id O ID da viagem a ser excluída.
+     */
     public void deleteTravel(String id) {
         Travel travel = getTravelById(id);
         travelRepository.delete(travel);
     }
 
+    /**
+     * Recupera todos os ingressos associados a um usuário pelo seu e-mail.
+     *
+     * @param email O e-mail do usuário cujos ingressos serão recuperados.
+     * @return Uma lista de ingressos associados ao e-mail fornecido.
+     */
     public List<Ticket> getAllTickets(String email) {
         return ticketRepository.findAllByUserEmail(email);
     }

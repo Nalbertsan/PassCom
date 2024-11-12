@@ -40,6 +40,15 @@ public class AuthService {
     private final TokenSecurity tokenSecurity;
     private final Utils utils;
 
+    /**
+     * Construtor do serviço de autenticação.
+     *
+     * @param userService Serviço de gerenciamento de usuários.
+     * @param userRepository Repositório de usuários para operações de banco de dados.
+     * @param passwordEncoder Codificador de senhas para criptografia.
+     * @param tokenSecurity Serviço de geração de tokens de segurança.
+     * @param utils Utilitário para operações auxiliares.
+     */
     public AuthService(UserService userService, UserRepository userRepository, PasswordEncoder passwordEncoder, TokenSecurity tokenSecurity, Utils utils) {
         this.userService = userService;
         this.userRepository = userRepository;
@@ -48,6 +57,14 @@ public class AuthService {
         this.utils = utils;
     }
 
+    /**
+     * Realiza o login de um usuário autenticando suas credenciais e gerando um token de acesso.
+     *
+     * @param body Objeto contendo o email e a senha do usuário.
+     * @return Um DTO contendo informações do usuário autenticado e o token de acesso.
+     * @throws UserNotFoundException se o usuário não for encontrado.
+     * @throws InvalidCredentialsException se o email ou a senha forem inválidos.
+     */
     public ResponseAuthDTO login(LoginRequestDTO body) {
         User user = userRepository.findByEmail(body.email())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -59,6 +76,13 @@ public class AuthService {
         }
     }
 
+    /**
+     * Registra um novo usuário, enviando suas informações para servidores externos e gerando um token de autenticação.
+     *
+     * @param body DTO contendo as informações de registro do usuário.
+     * @return Um DTO com as informações do usuário registrado e o token de acesso.
+     * @throws UserAlreadyExistsException se o email já estiver registrado.
+     */
     public ResponseAuthDTO register(RegisterRequestDTO body) {
         Optional<User> user = userRepository.findByEmail(body.email());
         if (user.isPresent()) {
@@ -109,7 +133,7 @@ public class AuthService {
                 }
             } catch (Exception e) {
                 System.err.println("Erro ao conectar com o servidor: " + url);
-                e.printStackTrace();
+
             }
         }
 
@@ -123,7 +147,12 @@ public class AuthService {
 
 
 
-
+    /**
+     * Salva um usuário em servidores externos, definindo-o como registrado em todos os servidores necessários.
+     *
+     * @param body DTO com as informações do usuário a serem salvas.
+     * @return Um DTO de mensagem indicando o sucesso do registro.
+     */
     public MessageDTO saveUserServer(RegisterServerRequestDTO body) {
         User user = new User();
         user.setEmail(body.user().getEmail());

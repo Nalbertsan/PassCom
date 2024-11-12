@@ -25,18 +25,36 @@ public class AuthController {
     @Autowired
     private final AuthService authService;
 
+    /**
+     * Endpoint para autenticação de login do usuário.
+     *
+     * @param body Objeto que contém as credenciais de login do usuário.
+     * @return ResponseEntity contendo a resposta de autenticação com as informações do token ou erro.
+     */
     @PostMapping("/login")
     public ResponseEntity<ResponseAuthDTO> login(@RequestBody LoginRequestDTO body) {
         ResponseAuthDTO response = authService.login(body);
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Endpoint para registro de um novo usuário.
+     *
+     * @param body Objeto que contém os dados de registro do usuário, validados antes da criação.
+     * @return ResponseEntity contendo a resposta de autenticação com as informações do token do novo usuário ou erro.
+     */
     @PostMapping("/register")
     public ResponseEntity<ResponseAuthDTO> register(@Valid @RequestBody RegisterRequestDTO body) {
         ResponseAuthDTO response = authService.register(body);
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Endpoint para registrar um novo usuário em múltiplos servidores de viagem.
+     *
+     * @param body Objeto que contém os dados do servidor a ser registrado.
+     * @return ResponseEntity contendo uma mensagem indicando o status do registro do servidor.
+     */
     @PostMapping("/register/server")
     public ResponseEntity<MessageDTO> registerServers(@RequestBody RegisterServerRequestDTO body) {
         MessageDTO response = authService.saveUserServer(body);

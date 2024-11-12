@@ -23,12 +23,22 @@ public class TravelController {
     private final TravelService travelService;
     private final RouterService routerService;
 
+    /**
+     * Endpoint para obter todas as viagens.
+     *
+     * @return ResponseEntity contendo a lista de todas as viagens.
+     */
     @GetMapping
     public ResponseEntity<List<Travel>> getAllTravels() {
         List<Travel> allTravels = travelService.getAllTravels();
         return ResponseEntity.ok(allTravels);
     }
 
+    /**
+     * Endpoint para obter todas as viagens de servidores com suas rotas.
+     *
+     * @return ResponseEntity contendo a lista de rotas construídas a partir das viagens dos servidores.
+     */
     @GetMapping("/servers")
     public ResponseEntity<List<RouterService.Route>> getAllServersTravels() {
         List<TravelAndServerDTO> allServersTravels = travelService.getAllServersTravels();
@@ -37,18 +47,36 @@ public class TravelController {
     }
 
 
+    /**
+     * Endpoint para obter uma viagem específica pelo ID.
+     *
+     * @param id Identificador da viagem.
+     * @return ResponseEntity contendo os dados da viagem encontrada.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Travel> getUserById(@PathVariable String id) {
         Travel travel = travelService.getTravelById(id);
         return ResponseEntity.ok(travel);
     }
 
+    /**
+     * Endpoint para obter todos os tickets de um usuário específico.
+     *
+     * @param email Email do usuário para busca dos tickets.
+     * @return ResponseEntity contendo a lista de tickets do usuário.
+     */
     @GetMapping("/tickets/{email}")
     public ResponseEntity<List<Ticket>> getTickets(@PathVariable String email) {
         List<Ticket> tickets = travelService.getAllTickets(email);
         return ResponseEntity.ok(tickets);
     }
 
+    /**
+     * Endpoint para criar uma nova viagem.
+     *
+     * @param travelDTO Objeto que contém os dados da nova viagem.
+     * @return ResponseEntity contendo os dados da viagem criada.
+     */
     @PostMapping
     public ResponseEntity<Travel> createTravel(@Valid @RequestBody TravelDTO travelDTO) {
         Travel travel = travelService.createTravel(travelDTO);

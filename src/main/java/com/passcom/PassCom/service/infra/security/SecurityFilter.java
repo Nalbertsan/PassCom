@@ -24,6 +24,11 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     UserRepository userRepository;
 
+    /**
+     * Filtro de autenticação customizado para validar o token JWT e configurar o contexto de segurança no Spring Security.
+     * Esse filtro intercepta as requisições, valida o token JWT e autentica o usuário caso o token seja válido.
+     * O filtro é inserido na cadeia de filtros do Spring Security para garantir que a autenticação aconteça antes de chegar à lógica de negócio.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = this.recoverToken(request);
@@ -46,6 +51,13 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Método para recuperar o token JWT da requisição.
+     * O token deve estar presente no cabeçalho "Authorization" da requisição, e este método extrai e retorna o token.
+     *
+     * @param request A requisição HTTP recebida.
+     * @return O token JWT extraído do cabeçalho, ou null se o cabeçalho não estiver presente.
+     */
     private String recoverToken(HttpServletRequest request){
         var authHeader = request.getHeader("Authorization");
         if(authHeader == null) return null;

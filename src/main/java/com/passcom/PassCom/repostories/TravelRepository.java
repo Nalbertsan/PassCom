@@ -16,4 +16,6 @@ public interface TravelRepository extends JpaRepository<Travel, String> {
 
     @Query("SELECT t FROM Travel t LEFT JOIN FETCH t.accents WHERE t.id = :id")
     Optional<Travel> findWithAccent(@Param("id") String id);
+
+    boolean existsByCityOriginAndCityDestiny(String cityOrigin, String cityDestiny);
 }

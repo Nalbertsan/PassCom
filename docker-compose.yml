@@ -13,6 +13,9 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       EXTERNAL_SERVICE_URL: http://app2:8080  # Comunicação com o app2
       SECONDARY_EXTERNAL_SERVICE_URL: http://app3:8080  # Comunicação com o app3
+      CITY_ORIGIN: "Bélem"  # Cidade de origem
+      CITY_DESTINY: "Fortaleza"  # Cidade de destino
+
     ports:
       - "9090:8080"  # Mapeia a porta 8080 da aplicação para a porta 9090 da máquina
 
@@ -40,6 +43,8 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       EXTERNAL_SERVICE_URL: http://app1:8080  # Comunicação com o app1
       SECONDARY_EXTERNAL_SERVICE_URL: http://app3:8080  # Comunicação com o app3
+      CITY_ORIGIN: "Fortaleza"  # Cidade de origem
+      CITY_DESTINY: "São Paulo"  # Cidade de destino
     ports:
       - "9091:8080"
 
@@ -67,6 +72,8 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       EXTERNAL_SERVICE_URL: http://app1:8080  # Comunicação com o app1
       SECONDARY_EXTERNAL_SERVICE_URL: http://app2:8080  # Comunicação com o app2
+      CITY_ORIGIN: "São Paulo"  # Cidade de origem
+      CITY_DESTINY: "Curitiba"  # Cidade de destino
     ports:
       - "9092:8080"
 
@@ -81,6 +88,21 @@ services:
       - "5435:5432"
     volumes:
       - postgres-data3:/var/lib/postgresql/data
+
+  frontend:  # Serviço da aplicação React com Vite
+    image: react-vite-app
+    container_name: react-vite-frontend
+    ports:
+      - "5173:80"  # Mapeia a porta 80 do container para a 3000 da máquina
+    environment:
+      VITE_API_BASE_URL: http://app1:8080  # URL base da API para o frontend
+      VITE_BASE_API_s1: http://app1:8080
+      VITE_BASE_API_s2: http://app2:8080
+      VITE_BASE_API_s3: http://app3:8080
+    depends_on:
+      - app1
+      - app2
+      - app3
 
 volumes:
   postgres-data1:

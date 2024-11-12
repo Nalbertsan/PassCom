@@ -33,6 +33,17 @@ public class AccentService {
         this.ticketRepository = ticketRepository;
     }
 
+    /**
+     * Método para realizar a venda de um assento específico em uma viagem.
+     *
+     * @param userEmail Email do usuário que está comprando o assento.
+     * @param accentNumber Número do assento a ser vendido.
+     * @param travelId Identificador da viagem.
+     * @return O objeto Accent atualizado após a venda.
+     * @throws UserNotFoundException se o usuário não for encontrado.
+     * @throws AccentNotFoundException se o assento não for encontrado.
+     * @throws AccentAlreadySoldException se o assento já estiver vendido ou reservado.
+     */
     @Transactional
     public Accent sellAccent(String userEmail, int accentNumber ,String travelId) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -51,6 +62,18 @@ public class AccentService {
         return accentRepository.save(accent);
     }
 
+    /**
+     * Método para confirmar a venda de um assento em uma viagem, atualizando o status de reserva para vendido.
+     *
+     * @param accentNumber Número do assento a ser confirmado.
+     * @param travelId Identificador da viagem.
+     * @param confirm Indicador booleano se a venda será confirmada.
+     * @param ticket Ticket associado ao assento (opcional).
+     * @return O objeto Accent atualizado após a confirmação da venda.
+     * @throws UserNotFoundException se o usuário não for encontrado.
+     * @throws AccentNotFoundException se o assento não for encontrado.
+     * @throws AccentAlreadySoldException se o assento já estiver vendido ou a reserva expirada.
+     */
     @Transactional
     public Accent confirmAccent(int accentNumber , String travelId, boolean confirm, Ticket ticket) {
         Accent accent = accentRepository.findByTravelIdAndNumber(travelId, accentNumber).orElseThrow(() -> new AccentNotFoundException("Accent not found"));
@@ -82,6 +105,11 @@ public class AccentService {
     }
 
 
+    /**
+     * Método para gerar um token de segurança para uma requisição.
+     *
+     * @return Uma string representando o token gerado para o usuário.
+     */
     public String generateTokenForRequest() {
         User user = new User();
         user.setEmail("email@gmail.com");

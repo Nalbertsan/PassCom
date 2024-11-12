@@ -1,6 +1,7 @@
 # Use uma imagem base do OpenJDK
 FROM openjdk:17-jdk-alpine
 
+
 # Cria um diretório para a aplicação
 VOLUME /tmp
 

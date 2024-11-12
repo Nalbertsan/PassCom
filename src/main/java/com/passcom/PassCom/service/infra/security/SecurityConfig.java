@@ -32,6 +32,12 @@ public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
 
+    /**
+     * Configuração de segurança do Spring, incluindo regras de autorização, CORS e gerenciamento de sessão.
+     * Esta configuração é usada para garantir a segurança da aplicação, desabilitando CSRF,
+     * configurando o gerenciamento de sessão como sem estado (stateless), permitindo acesso
+     * público às rotas de login e registro, e exigindo autenticação para outras rotas.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -43,22 +49,43 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors(Customizer.withDefaults());;
+                .cors(Customizer.withDefaults());
+        ;
 
         return http.build();
     }
 
+    /**
+     * Bean para o codificador de senha {@link PasswordEncoder}, utilizado para criptografar senhas.
+     * Neste caso, é utilizado o {@link BCryptPasswordEncoder} para garantir a segurança das senhas.
+     *
+     * @return o codificador de senha configurado.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Bean para o {@link AuthenticationManager} necessário para autenticação de usuários.
+     * Este gerenciador é usado para validar credenciais e fornecer um contexto de segurança para o Spring Security.
+     *
+     * @param authenticationConfiguration a configuração de autenticação que fornece o gerenciador de autenticação.
+     * @return o {@link AuthenticationManager} configurado.
+     * @throws Exception se ocorrer um erro durante a configuração do gerenciador de autenticação.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // Configuração de CORS para Spring Security 6.1
+    /**
+     * Configuração CORS para permitir que a aplicação frontend interaja com o backend.
+     * Permite que o frontend da aplicação em {@code http://localhost:5173} faça requisições ao backend.
+     * As configurações incluem os métodos HTTP permitidos e os cabeçalhos.
+     *
+     * @return a configuração de CORS para a aplicação.
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

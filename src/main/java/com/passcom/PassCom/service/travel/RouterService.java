@@ -19,6 +19,10 @@ public class RouterService {
         this.travelGraph = new DirectedMultigraph<>(TravelEdge.class);
     }
 
+    /**
+     * Classe que representa uma aresta (edge) no grafo de viagens, conectando duas cidades.
+     * Cada aresta contém informações sobre o servidor, o ID da viagem e a lista de acentos associados.
+     */
     public static class TravelEdge extends DefaultEdge {
         private final String server;
         private final String travelId;
@@ -35,11 +39,18 @@ public class RouterService {
         public List<Accent> getAccents() { return accents; }
     }
 
-    // Classe para representar uma rota completa com cidade inicial, final e lista de arestas
+    /**
+     * Classe para representar uma rota completa entre cidades, incluindo uma lista de arestas.
+     */
         public record Route(String startCity, String endCity, List<TravelEdge> edges) {
     }
 
-    // Método para construir o grafo e retornar todas as rotas possíveis
+    /**
+     * Método responsável por construir o grafo de viagens e retornar todas as rotas possíveis entre cidades.
+     *
+     * @param data Lista de dados de viagens e servidores.
+     * @return Uma lista com todas as rotas possíveis.
+     */
     public List<Route> buildTravelGraph(List<TravelAndServerDTO> data) {
         // Limpa o grafo para garantir que estamos começando do zero
         travelGraph.removeAllVertices(new HashSet<>(travelGraph.vertexSet()));
@@ -83,14 +94,27 @@ public class RouterService {
     }
 
 
-    // Método para buscar todas as rotas possíveis entre duas cidades
+    /**
+     * Método para buscar todas as rotas possíveis entre duas cidades.
+     *
+     * @param startCity A cidade de origem.
+     * @param endCity A cidade de destino.
+     * @return Uma lista de rotas entre as cidades fornecidas.
+     */
     public List<Route> findRoutes(String startCity, String endCity) {
         List<Route> routes = new ArrayList<>();
         findRoutesDFS(startCity, endCity, new ArrayList<>(), routes);
         return routes;
     }
 
-    // Algoritmo DFS para encontrar todas as rotas
+    /**
+     * Algoritmo DFS para encontrar todas as rotas entre duas cidades.
+     *
+     * @param currentCity A cidade atual durante a busca.
+     * @param endCity A cidade de destino.
+     * @param path O caminho atual de arestas.
+     * @param routes A lista de rotas encontradas.
+     */
     private void findRoutesDFS(String currentCity, String endCity, List<TravelEdge> path, List<Route> routes) {
         if (currentCity.equals(endCity)) {
             routes.add(new Route(path.isEmpty() ? currentCity : travelGraph.getEdgeSource(path.get(0)), endCity, new ArrayList<>(path)));
@@ -107,11 +131,23 @@ public class RouterService {
         });
     }
 
-    // Método auxiliar para verificar se a cidade já está na rota
+    /**
+     * Método auxiliar para verificar se a cidade já está presente no caminho atual.
+     *
+     * @param path O caminho atual de arestas.
+     * @param city A cidade a ser verificada.
+     * @return True se a cidade estiver no caminho, false caso contrário.
+     */
     private boolean containsCity(List<TravelEdge> path, String city) {
         return path.stream().anyMatch(edge -> travelGraph.getEdgeTarget(edge).equals(city) || travelGraph.getEdgeSource(edge).equals(city));
     }
 
+    /**
+     * Método para remover rotas duplicadas.
+     *
+     * @param routes A lista de rotas.
+     * @return Uma lista com rotas únicas.
+     */
     public static List<Route> removeDuplicateRoutes(List<Route> routes) {
         Set<RouteKey> uniqueRouteKeys = new HashSet<>();
         List<Route> uniqueRoutes = new ArrayList<>();
@@ -125,7 +161,9 @@ public class RouterService {
         return uniqueRoutes;
     }
 
-    // Classe auxiliar para chave única de rota
+    /**
+     * Classe auxiliar para criar uma chave única para cada rota, usada para identificar rotas duplicadas.
+     */
         private record RouteKey(String startCity, String endCity, List<TravelEdge> edges) {
 
         @Override
