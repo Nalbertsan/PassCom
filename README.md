@@ -1,3 +1,180 @@
+# PassCom - Ambiente Docker
+
+Este projeto configura a aplicação PassCom, com backend em Spring Boot e frontend em React com Vite, utilizando Docker e Docker Compose.
+
+## Repositórios
+- **Backend**: [PassCom Backend](https://github.com/Nalbertsan/PassCom)
+- **Frontend**: [PassCom Frontend](https://github.com/Nalbertsan/passcomfront)
+
+## Configuração com Docker Compose
+
+### Pré-requisitos
+- Docker e Docker Compose instalados
+
+## Passo a Passo
+
+### 1. Clone os Repositórios
+
+Clone os repositórios do backend e frontend em diretórios locais.
+
+git clone https://github.com/Nalbertsan/PassCom
+git clone https://github.com/Nalbertsan/passcomfront
+
+Crie o arquivo docker-compose.yml
+
+No diretório principal, crie um arquivo docker-compose.yml com o seguinte conteúdo:
+
+```
+yaml
+Copiar código
+version: '3.8'
+
+services:
+  app1:  # Primeiro serviço da aplicação Spring
+    image: nalbertsan/passcom:1.0
+    container_name: passcom-app1
+    environment:
+      SPRING_APPLICATION_NAME: PassCom1
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db1:5432/postgres  # Conecta ao db1
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+      API_SECURITY_TOKEN_SECRET: 18-08-2022Cal&Nal
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EXTERNAL_SERVICE_URL: http://app2:8080  # Comunicação com o app2
+      SECONDARY_EXTERNAL_SERVICE_URL: http://app3:8080  # Comunicação com o app3
+      CITY_ORIGIN: "Bélem"
+      CITY_DESTINY: "Fortaleza"
+    ports:
+      - "9090:8080"
+
+  db1:
+    image: postgres:15
+    container_name: postgres-db1
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data1:/var/lib/postgresql/data
+
+  app2:
+    image: nalbertsan/passcom:1.0
+    container_name: passcom-app2
+    environment:
+      SPRING_APPLICATION_NAME: PassCom2
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db2:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+      API_SECURITY_TOKEN_SECRET: 18-08-2022Cal&Nal
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EXTERNAL_SERVICE_URL: http://app1:8080
+      SECONDARY_EXTERNAL_SERVICE_URL: http://app3:8080
+      CITY_ORIGIN: "Fortaleza"
+      CITY_DESTINY: "São Paulo"
+    ports:
+      - "9091:8080"
+
+  db2:
+    image: postgres:15
+    container_name: postgres-db2
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-data2:/var/lib/postgresql/data
+
+  app3:
+    image: nalbertsan/passcom:1.0
+    container_name: passcom-app3
+    environment:
+      SPRING_APPLICATION_NAME: PassCom3
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db3:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+      API_SECURITY_TOKEN_SECRET: 18-08-2022Cal&Nal
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EXTERNAL_SERVICE_URL: http://app1:8080
+      SECONDARY_EXTERNAL_SERVICE_URL: http://app2:8080
+      CITY_ORIGIN: "São Paulo"
+      CITY_DESTINY: "Curitiba"
+    ports:
+      - "9092:8080"
+
+  db3:
+    image: postgres:15
+    container_name: postgres-db3
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres-data3:/var/lib/postgresql/data
+
+  frontend:
+    image: nalbertsan/react-vite-app:1.0
+    container_name: react-vite-frontend
+    ports:
+      - "5173:80"
+    environment:
+      VITE_API_BASE_URL: http://app1:8080
+      VITE_BASE_API_s1: http://app1:8080
+      VITE_BASE_API_s2: http://app2:8080
+      VITE_BASE_API_s3: http://app3:8080
+    depends_on:
+      - app1
+      - app2
+      - app3
+
+volumes:
+  postgres-data1:
+  postgres-data2:
+  postgres-data3:
+```
+
+Inicie o Docker Compose
+
+No terminal, navegue até o diretório onde o arquivo docker-compose.yml está localizado e execute o comando abaixo para iniciar todos os serviços:
+
+bash
+Copiar código
+docker-compose up -d
+Esse comando irá baixar as imagens, configurar os contêineres e iniciar os serviços em segundo plano.
+
+Verifique os Contêineres
+
+Para checar se os contêineres estão ativos e funcionando corretamente, execute:
+
+bash
+Copiar código
+docker-compose ps
+Isso mostrará uma lista dos contêineres em execução e suas portas mapeadas.
+
+Acessando a Aplicação
+
+Backend:
+
+Serviço 1: http://localhost:9090
+Serviço 2: http://localhost:9091
+Serviço 3: http://localhost:9092
+Frontend: http://localhost:5173
+
+Observações
+Certifique-se de que as portas mencionadas (9090, 9091, 9092, 5173) estão disponíveis no seu sistema.
+Cada instância de banco de dados PostgreSQL e serviço Spring Boot está configurada para se comunicar com as outras.
+Encerrando os Serviços
+Para encerrar e remover os contêineres, use o comando:
+
+bash
+Copiar código
+docker-compose down
+
 ## Introdução
 
 O setor de aviação de baixo custo enfrenta desafios constantes para otimizar recursos e aumentar a competitividade. A adoção do sistema de venda compartilhada de passagens (PASSCOM) por três companhias aéreas visa melhorar a acessibilidade e maximizar os lucros por meio de uma solução que permite a reserva integrada de trechos de voos entre diferentes empresas. No entanto, cada companhia possui um servidor centralizado e independente, o que torna necessário desenvolver uma comunicação distribuída entre esses servidores. A solução ideal deve garantir que o primeiro cliente a selecionar um trecho tenha preferência e que o sistema seja resiliente a falhas e sem pontos únicos de falha.
