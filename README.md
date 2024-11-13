@@ -138,7 +138,7 @@ volumes:
   postgres-data3:
 ```
 
-##Inicie o Docker Compose
+## Inicie o Docker Compose
 
 No terminal, navegue até o diretório onde o arquivo docker-compose.yml está localizado e execute o comando abaixo para iniciar todos os serviços:
 
@@ -147,33 +147,16 @@ Copiar código
 docker-compose up -d
 Esse comando irá baixar as imagens, configurar os contêineres e iniciar os serviços em segundo plano.
 
-Verifique os Contêineres
+# Acessando a Aplicação
 
-Para checar se os contêineres estão ativos e funcionando corretamente, execute:
+# Serviço 1: http://localhost:9090
+# Serviço 2: http://localhost:9091
+# Serviço 3: http://localhost:9092
+# Frontend: http://localhost:5173
 
-bash
-Copiar código
-docker-compose ps
-Isso mostrará uma lista dos contêineres em execução e suas portas mapeadas.
-
-Acessando a Aplicação
-
-##Backend:
-
-#Serviço 1: http://localhost:9090
-#Serviço 2: http://localhost:9091
-#Serviço 3: http://localhost:9092
-#Frontend: http://localhost:5173
-
-##Observações
+## Observações
 Certifique-se de que as portas mencionadas (9090, 9091, 9092, 5173) estão disponíveis no seu sistema.
 Cada instância de banco de dados PostgreSQL e serviço Spring Boot está configurada para se comunicar com as outras.
-Encerrando os Serviços
-Para encerrar e remover os contêineres, use o comando:
-
-bash
-Copiar código
-docker-compose down
 
 ## Introdução
 
