@@ -147,12 +147,12 @@ Copiar código
 docker-compose up -d
 Esse comando irá baixar as imagens, configurar os contêineres e iniciar os serviços em segundo plano.
 
-# Acessando a Aplicação
+## Acessando a Aplicação
 
-# Serviço 1: http://localhost:9090
-# Serviço 2: http://localhost:9091
-# Serviço 3: http://localhost:9092
-# Frontend: http://localhost:5173
+### Serviço 1: http://localhost:9090
+### Serviço 2: http://localhost:9091
+### Serviço 3: http://localhost:9092
+### Frontend: http://localhost:5173
 
 ## Observações
 Certifique-se de que as portas mencionadas (9090, 9091, 9092, 5173) estão disponíveis no seu sistema.
