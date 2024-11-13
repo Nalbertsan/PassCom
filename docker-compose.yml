@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app1:  # Primeiro serviço da aplicação Spring
-    image: passcom
+    image: nalbertsan/passcom:1.0
     container_name: passcom-app1
     environment:
       SPRING_APPLICATION_NAME: PassCom1
@@ -32,7 +32,7 @@ services:
       - postgres-data1:/var/lib/postgresql/data
 
   app2:  # Segundo serviço da aplicação Spring
-    image: passcom
+    image: nalbertsan/passcom:1.0
     container_name: passcom-app2
     environment:
       SPRING_APPLICATION_NAME: PassCom2
@@ -61,7 +61,7 @@ services:
       - postgres-data2:/var/lib/postgresql/data
 
   app3:  # Terceiro serviço da aplicação Spring
-    image: passcom
+    image: nalbertsan/passcom:1.0
     container_name: passcom-app3
     environment:
       SPRING_APPLICATION_NAME: PassCom3
@@ -90,7 +90,7 @@ services:
       - postgres-data3:/var/lib/postgresql/data
 
   frontend:  # Serviço da aplicação React com Vite
-    image: react-vite-app
+    image: nalbertsan/react-vite-app:1.0
     container_name: react-vite-frontend
     ports:
       - "5173:80"  # Mapeia a porta 80 do container para a 3000 da máquina
